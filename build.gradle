@@ -1,0 +1,65 @@
+buildscript {
+    repositories {
+        repositories { jcenter() }
+    }
+    dependencies {
+        classpath "com.github.jengelman.gradle.plugins:shadow:1.2.3"
+        classpath 'com.bmuschko:gradle-docker-plugin:3.0.3'
+    }
+}
+
+apply plugin: 'idea'
+apply plugin: 'java'
+apply plugin: 'application'
+apply plugin: "com.github.johnrengelman.shadow"
+apply plugin: 'com.bmuschko.docker-remote-api'
+
+import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
+
+
+repositories {
+    mavenCentral()
+}
+
+mainClassName = 'org.giwi.api.beers.BeersAPI'
+
+dependencies {
+    compile 'com.sparkjava:spark-core:2.5.2'
+    compile 'com.google.code.gson:gson:2.4'
+    compile 'com.h2database:h2:1.4.190'
+}
+
+shadowJar {
+    classifier = 'fat'
+    manifest {
+        attributes 'Main-Class': 'org.giwi.api.beers.BeersAPI'
+    }
+    doLast {
+        copy {
+            from "$buildDir/libs/"
+            into "application/"
+        }
+    }
+}
+
+task apidoc(type:Exec) {
+    workingDir '.'
+    commandLine './node_modules/apidoc/bin/apidoc'
+    args  '-i', 'src/main/java'
+    standardOutput = new ByteArrayOutputStream()
+    ext.output = {
+        return standardOutput.toString()
+    }
+    doLast {
+        copy {
+            from "doc"
+            into "src/main/resources/static/api-doc"
+        }
+    }
+}
+task buildImage(type: DockerBuildImage) {
+    dependsOn shadowJar
+    inputDir = file('.')
+    tag = 'giwi/beer-api'
+}
+shadowJar.dependsOn apidoc

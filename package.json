@@ -1,0 +1,22 @@
+{
+  "name": "simple-beer-api",
+  "version": "1.0.0",
+  "description": "Simple Beer API",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Giwi/Simple-BeerAPI.git"
+  },
+  "author": "Giwi <giwi@free.fr> (http://giwi.free.fr/)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Giwi/Simple-BeerAPI/issues"
+  },
+  "homepage": "https://github.com/Giwi/Simple-BeerAPI#readme",
+  "dependencies": {
+    "apidoc": "^0.16.1"
+  }
+}

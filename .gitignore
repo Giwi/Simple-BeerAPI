@@ -1,0 +1,7 @@
+.gradle
+.idea
+build
+node_modules
+application
+doc
+src/main/resources/static/api-doc

@@ -1,0 +1,16 @@
+
+{
+  "name": "simple-beer-api",
+  "version": "0.1.0",
+  "description": "simple-beer-api",
+  "title": "simple-beer-api",
+  "url": "",
+  "sampleUrl": "..",
+  "template": {
+    "withCompare": true,
+    "withGenerator": true
+  },
+  "header": {
+    "filename": "README.md"
+  }
+}
