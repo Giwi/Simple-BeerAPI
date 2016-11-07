@@ -9,9 +9,10 @@ import spark.resource.ClassPathResource;
 
 import javax.servlet.MultipartConfigElement;
 import javax.servlet.http.Part;
-import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -107,14 +108,16 @@ public class BeersAPI {
 
         post("/upload", (request, response) -> {
             request.attribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("/temp"));
-            File tempFile = new File(resource.getURL().getPath() + "/img/" + getFileName(request.raw().getPart("uploaded_file")));
-            try (InputStream input = request.raw().getPart("uploaded_file").getInputStream()) {
-                Files.copy(input, tempFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            Part uploadedFile = request.raw().getPart("uploaded_file");
+            Path tempFile = Paths.get("static/img/" + getFileName(uploadedFile));
+            try (InputStream input = uploadedFile.getInputStream()) {
+                Files.copy(input, tempFile, StandardCopyOption.REPLACE_EXISTING);
                 Beer b = Beer.getBeer(request.raw().getParameter("id"), conn);
-                b.setImg("img/" + getFileName(request.raw().getPart("uploaded_file")));
+                b.setImg("img/" + getFileName(uploadedFile));
                 Beer.updateBeer(gson.toJson(b), String.valueOf(request.raw().getPart("id")), conn);
+                uploadedFile.delete();
             }
-            return "<h1>You uploaded this image:<h1><img src='img/" + tempFile.toPath().getFileName() + "'>";
+            return "<h1>You uploaded this image:<h1><img src='img/" + tempFile.getFileName() + "'>";
         });
 
         exception(Exception.class, (e, request, response) -> {
