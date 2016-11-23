@@ -60,6 +60,6 @@ task apidoc(type:Exec) {
 task buildImage(type: DockerBuildImage) {
     dependsOn shadowJar
     inputDir = file('.')
-    tag = 'giwi/beer-api'
+    tag = 'giwi/simplebeerapi'
 }
 shadowJar.dependsOn apidoc

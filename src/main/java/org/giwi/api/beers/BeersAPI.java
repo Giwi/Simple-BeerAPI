@@ -1,6 +1,7 @@
 package org.giwi.api.beers;
 
 import com.google.gson.Gson;
+import org.eclipse.jetty.http.HttpHeader;
 import org.giwi.api.beers.model.Beer;
 import org.giwi.api.beers.tools.BeerInitialize;
 import org.slf4j.Logger;
@@ -48,7 +49,7 @@ public class BeersAPI {
         initDB();
         staticFileLocation("/static");
         ClassPathResource resource = new ClassPathResource("/static");
-
+        before("/api/*", (request, response) -> response.header(HttpHeader.CONTENT_TYPE.asString(), "application/json"));
         /**
          * @api {get} /api/beers Get list of beers
          * @apiName getBeers
@@ -122,7 +123,6 @@ public class BeersAPI {
 
         exception(Exception.class, (e, request, response) -> {
             logger.error(e.getMessage(), e);
-            e.printStackTrace();
             response.status(500);
             response.body(e.getMessage());
         });

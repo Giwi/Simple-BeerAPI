@@ -18,6 +18,9 @@ public class BeerInitialize {
 
     private static Logger logger = LoggerFactory.getLogger(BeerInitialize.class);
 
+    private BeerInitialize() {
+        // empty
+    }
     /**
      * Init beer db.
      *
@@ -206,5 +209,4 @@ public class BeerInitialize {
 
         return list;
     }
-
 }
