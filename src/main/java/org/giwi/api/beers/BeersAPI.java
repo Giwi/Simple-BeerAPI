@@ -6,7 +6,8 @@ import org.giwi.api.beers.model.Beer;
 import org.giwi.api.beers.tools.BeerInitialize;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import spark.resource.ClassPathResource;
+import spark.Spark;
+import spark.utils.IOUtils;
 
 import javax.servlet.MultipartConfigElement;
 import javax.servlet.http.Part;
@@ -47,8 +48,34 @@ public class BeersAPI {
      */
     public static void main(String[] args) {
         initDB();
+
         staticFileLocation("/static");
-        ClassPathResource resource = new ClassPathResource("/static");
+        get("/api-doc/", (q, a) -> IOUtils.toString(Spark.class.getResourceAsStream("static/index.html")));
+
+        options("/api/*", (request, response) -> {
+
+            String accessControlRequestHeaders = request.headers("Access-Control-Request-Headers");
+            if (accessControlRequestHeaders != null) {
+                response.header("Access-Control-Allow-Headers", accessControlRequestHeaders);
+            }
+
+            String accessControlRequestMethod = request.headers("Access-Control-Request-Method");
+            if (accessControlRequestMethod != null) {
+                response.header("Access-Control-Allow-Methods", accessControlRequestMethod);
+            }
+
+            return "OK";
+        });
+
+        before((request, response) -> {
+            response.header("Access-Control-Allow-Origin", "*");
+            response.header("Access-Control-Request-Method", "GET, POST, PUT, DELETE, OPTION");
+            response.header("Access-Control-Allow-Headers", "*");
+            // Note: this may or may not be necessary in your particular application
+            response.type("application/json");
+        });
+
+
         before("/api/*", (request, response) -> response.header(HttpHeader.CONTENT_TYPE.asString(), "application/json"));
         /**
          * @api {get} /api/beers Get list of beers

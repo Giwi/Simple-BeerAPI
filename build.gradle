@@ -24,7 +24,7 @@ repositories {
 mainClassName = 'org.giwi.api.beers.BeersAPI'
 
 dependencies {
-    compile 'com.sparkjava:spark-core:2.5.2'
+    compile 'com.sparkjava:spark-core:2.5.3'
     compile 'com.google.code.gson:gson:2.4'
     compile 'com.h2database:h2:1.4.190'
 }
